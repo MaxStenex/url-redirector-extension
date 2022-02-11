@@ -7,11 +7,16 @@ input {
 }
 
 .default-input {
-  @apply text-sm py-2 px-3 rounded;
+  @apply text-sm py-2 px-3 rounded border border-slate-300 
+  focus:border-slate-500 transition-all;
+}
+
+.btn {
+  @apply font-bold rounded uppercase text-sm tracking-wide transition-all;
+  outline: none;
 }
 
 .default-btn {
-  @apply font-bold py-2 px-10 rounded bg-slate-500 text-white 
-  uppercase text-sm tracking-wide hover:text-slate-500 hover:bg-white 
-  transition-all border-2 border-slate-500;
+  @apply btn py-2 px-10  bg-slate-500 text-white hover:text-slate-500
+  hover:bg-white border-2 border-slate-500 focus:border-slate-700;
 }

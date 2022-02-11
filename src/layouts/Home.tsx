@@ -10,8 +10,12 @@ export const HomeLayout = () => {
     setLinks((prev) => [...prev, link]);
   };
 
+  const removeLink = (linkId: string) => {
+    setLinks((prev) => [...prev].filter((l) => l.id !== linkId));
+  };
+
   return (
-    <LinksContext.Provider value={{ links, addLink }}>
+    <LinksContext.Provider value={{ links, addLink, removeLink }}>
       <Form />
       <Links />
     </LinksContext.Provider>

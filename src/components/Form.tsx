@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { LinksContext } from "../contexts";
+import { nanoid } from "nanoid";
 
 type FormFieldsType = {
   title: string;
@@ -7,7 +8,7 @@ type FormFieldsType = {
   to: string;
 };
 
-const formInitialState = {
+const formInitialState: FormFieldsType = {
   title: "",
   from: "",
   to: "",
@@ -33,8 +34,9 @@ export const Form: React.FC = () => {
 
     try {
       const { title, from, to } = formValues;
+      const id = nanoid();
 
-      addLink({ title, from, to });
+      addLink({ id, title, from, to });
       setFormValues(formInitialState);
     } catch (error) {}
   };
