@@ -1,7 +1,6 @@
 {
   "name": "URL Redirector",
   "description": "URL Redirector",
-  "default_locale": "en",
   "version": "0.1",
   "manifest_version": 3,
   "action": {
@@ -9,8 +8,8 @@
     "default_title": "URL Redirector"
   },
   "icons": {
-    "16": "logo.png",
-    "48": "logo.png",
-    "128": "logo.png"
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   }
 }
