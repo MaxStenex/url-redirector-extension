@@ -1,70 +1,68 @@
-import React, { useContext, useState } from "react";
-import { LinksContext } from "../contexts";
 import { nanoid } from "nanoid";
+import React, { useContext } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { swapSvg } from "../assets";
+import { LinksContext } from "../contexts";
 
-type FormFieldsType = {
+type InputsType = {
   title: string;
   from: string;
   to: string;
 };
 
-const formInitialState: FormFieldsType = {
-  title: "",
-  from: "",
-  to: "",
-};
-
 export const Form: React.FC = () => {
-  const [formValues, setFormValues] = useState<FormFieldsType>(formInitialState);
-
-  const onFormFieldChange = ({
-    field,
-    value,
-  }: {
-    field: keyof FormFieldsType;
-    value: string;
-  }) => {
-    setFormValues({ ...formValues, [`${field}`]: value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<InputsType>();
 
   const { addLink } = useContext(LinksContext);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit: SubmitHandler<InputsType> = (data) => {
     try {
-      const { title, from, to } = formValues;
+      const { title, from, to } = data;
       const id = nanoid();
 
       addLink({ id, title, from, to });
-      setFormValues(formInitialState);
+      reset();
     } catch (error) {}
   };
 
   return (
-    <form className="mt-7" onSubmit={onSubmit}>
-      <input
-        value={formValues.title}
-        onChange={(e) => onFormFieldChange({ field: "title", value: e.target.value })}
-        className="default-input w-full"
-        placeholder="Title"
-        type="text"
-      />
-      <div className="flex justify-between mt-4">
+    <form className="mt-7" onSubmit={handleSubmit(onSubmit)}>
+      <div>
         <input
-          value={formValues.from}
-          onChange={(e) => onFormFieldChange({ field: "from", value: e.target.value })}
-          className="default-input flex-1 mr-6"
-          placeholder="From"
+          className="default-input w-full"
+          placeholder="Title"
           type="text"
+          {...register("title", { required: true })}
         />
-        <input
-          value={formValues.to}
-          onChange={(e) => onFormFieldChange({ field: "to", value: e.target.value })}
-          className="default-input flex-1"
-          placeholder="To"
-          type="text"
-        />
+        {errors.title && <span className="error-text">Field is required</span>}
+      </div>
+      <div className="flex justify-between items-start mt-4">
+        <div className="flex-1">
+          <input
+            className="default-input w-full"
+            placeholder="From"
+            type="text"
+            {...register("from", { required: true })}
+          />
+          {errors.from && <span className="error-text">Field is required</span>}
+        </div>
+        <div className="mx-3 mt-3">
+          <img src={swapSvg} alt="->" className="w-4 select-none" />
+        </div>
+        <div className="flex-1">
+          <input
+            className="default-input w-full"
+            placeholder="To"
+            type="text"
+            {...register("to", { required: true })}
+          />
+          {errors.to && <span className="error-text">Field is required</span>}
+        </div>
       </div>
       <button className="default-btn mt-4">Add</button>
     </form>
