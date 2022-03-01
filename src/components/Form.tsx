@@ -3,6 +3,8 @@ import React, { useContext } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { swapSvg } from "../assets";
 import { LinksContext } from "../contexts";
+import { validateLink } from "../utils/validateLink";
+import { FieldError } from "./FieldError";
 
 type InputsType = {
   title: string;
@@ -16,13 +18,32 @@ export const Form: React.FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<InputsType>();
+    setError,
+  } = useForm<InputsType>({
+    shouldUseNativeValidation: true,
+  });
 
   const { addLink } = useContext(LinksContext);
 
   const onSubmit: SubmitHandler<InputsType> = (data) => {
     try {
       const { title, from, to } = data;
+
+      const [isFromLinkValid, isToLinkValid] = [validateLink(from), validateLink(to)];
+      if (!isFromLinkValid || !isToLinkValid) {
+        !isFromLinkValid &&
+          setError("from", {
+            message: "Invalid link",
+          });
+
+        !isToLinkValid &&
+          setError("to", {
+            message: "Invalid link",
+          });
+
+        return;
+      }
+
       const id = nanoid();
 
       addLink({ id, title, from, to });
@@ -39,17 +60,17 @@ export const Form: React.FC = () => {
           type="text"
           {...register("title", { required: true })}
         />
-        {errors.title && <span className="error-text">Field is required</span>}
+        <FieldError text={errors.title?.message} />
       </div>
       <div className="flex justify-between items-start mt-4">
         <div className="flex-1">
           <input
             className="default-input w-full"
-            placeholder="From"
+            placeholder="https://example.com"
             type="text"
             {...register("from", { required: true })}
           />
-          {errors.from && <span className="error-text">Field is required</span>}
+          <FieldError text={errors.from?.message} />
         </div>
         <div className="mx-3 mt-3">
           <img src={swapSvg} alt="->" className="w-4 select-none" />
@@ -57,11 +78,11 @@ export const Form: React.FC = () => {
         <div className="flex-1">
           <input
             className="default-input w-full"
-            placeholder="To"
+            placeholder="https://example.com"
             type="text"
             {...register("to", { required: true })}
           />
-          {errors.to && <span className="error-text">Field is required</span>}
+          <FieldError text={errors.to?.message} />
         </div>
       </div>
       <button className="default-btn mt-4">Add</button>
